@@ -36,39 +36,3 @@ class MainApp extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-// class CongratulationsPage extends StatelessWidget {
-//   const CongratulationsPage({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final winner = Player(name: '123', color: Colors.deepPurple);
-//     final playAgainFunction = () {};
-
-//     return CongratulationScreen(
-//         winner: winner, playAgainFunction: playAgainFunction);
-//   }
-// }
-
-
-// class ChooseTurnPage extends StatelessWidget {
-//   const ChooseTurnPage({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final leftPlayer = Player(name: 'Никуткин', color: Colors.green);
-//     final rightPlayer = Player(name: 'Холобаев', color: Colors.red);
-
-//     return ChooseTurnScreen(
-//       leftPlayer: leftPlayer,
-//       rightPlayer: rightPlayer,
-//       leftTap: () {},
-//       rightTap: () {},
-//     );
-//   }
-// }

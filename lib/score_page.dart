@@ -1,6 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:desktop_tennis_score/entities.dart';
-import 'package:desktop_tennis_score/main.dart';
 import 'package:desktop_tennis_score/screens/choose_turn_screen.dart';
 import 'package:desktop_tennis_score/screens/congratulation_screen.dart';
 import 'package:flutter/material.dart';
