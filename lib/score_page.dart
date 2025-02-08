@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:desktop_tennis_score/entities.dart';
 import 'package:desktop_tennis_score/screens/choose_turn_screen.dart';
@@ -25,7 +27,7 @@ class ScorePage extends StatefulWidget {
 }
 
 class _ScorePageState extends State<ScorePage> {
-  var myState = AppState.chooseTurn;
+  AppState myState = AppState.chooseTurn;
   int _scoreGreen = 0;
   int _scoreRed = 0;
   int _turnCounter = 0;
@@ -34,7 +36,8 @@ class _ScorePageState extends State<ScorePage> {
   int _globalScoreRed = 0;
   int _turnChanger = 2;
   Player _winner = Player(name: 'Ошибка', color: Colors.cyan);
-  // bool _chooseTurn = true;
+  List<(bool, int, int, int, int)> _scoreOrder = [];
+  // (_redTurn, _scoreGreen, _scoreRed, _turnCounter, _turnChanger)
 
   bool _checkWin() {
     if (_scoreGreen >= 10 && _scoreRed >= 10) {
@@ -54,6 +57,7 @@ class _ScorePageState extends State<ScorePage> {
       _redTurn = false;
       _turnChanger = 2;
       myState = AppState.congratulations;
+      _scoreOrder.clear();
       return true;
     }
     return false;
@@ -64,6 +68,9 @@ class _ScorePageState extends State<ScorePage> {
       _turnCounter = 0;
       _redTurn = !_redTurn;
     }
+    _scoreOrder
+        .add((_redTurn, _scoreGreen, _scoreRed, _turnCounter, _turnChanger));
+    print(_scoreOrder);
   }
 
   void _incrementGreen() {
@@ -93,6 +100,9 @@ class _ScorePageState extends State<ScorePage> {
       myState = AppState.game;
       _redTurn = true;
     });
+    _scoreOrder
+        .add((_redTurn, _scoreGreen, _scoreRed, _turnCounter, _turnChanger));
+    AudioPlayer().play(AssetSource('sounds/gong.mp3'));
   }
 
   void _chooseGreen() {
@@ -100,6 +110,9 @@ class _ScorePageState extends State<ScorePage> {
       myState = AppState.game;
       _redTurn = false;
     });
+    _scoreOrder
+        .add((_redTurn, _scoreGreen, _scoreRed, _turnCounter, _turnChanger));
+    AudioPlayer().play(AssetSource('sounds/gong.mp3'));
   }
 
   Text _getTitleText() {
@@ -133,6 +146,22 @@ class _ScorePageState extends State<ScorePage> {
     });
   }
 
+  bool rejectTurn() {
+    bool output = false;
+    setState(() {
+      print(_scoreOrder);
+      if (_scoreOrder.length > 1) {
+        _scoreOrder.removeLast();
+        _redTurn = _scoreOrder.last.$1;
+        _scoreGreen = _scoreOrder.last.$2;
+        _scoreRed = _scoreOrder.last.$3;
+        _turnCounter = _scoreOrder.last.$4;
+        _turnChanger = _scoreOrder.last.$5;
+      }
+    });
+    return output;
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.sizeOf(context).width;
@@ -150,7 +179,23 @@ class _ScorePageState extends State<ScorePage> {
           centerTitle: true,
           title: _getTitleText(),
           backgroundColor: Colors.black,
-          leading: const Icon(Icons.menu, color: Colors.black),
+          leading: IconButton(
+            icon: Icon(
+              Icons.restore_outlined,
+              color: Colors.white,
+              size: 35,
+              semanticLabel: 'Отменить ход',
+            ),
+            onPressed: () {
+              if (rejectTurn()) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Center(child: const Text('Ход отменён')),
+                  ),
+                );
+              }
+            },
+          ),
         ),
         body: Row(
           children: [
@@ -284,29 +329,3 @@ class ScoreTile extends StatelessWidget {
     );
   }
 }
-
-
-      // OLD CHOOSE TURN
-      // return AlertDialog(
-      //   title: Center(child: const Text("Первым подает?")),
-      //   actions: <Widget>[
-      //     TextButton(
-      //       onPressed: _chooseGreen,
-      //       child: Container(
-      //         color: Colors.green,
-      //         padding: const EdgeInsets.all(14),
-      //         child: const Text("Зеленый",
-      //             style: TextStyle(color: Colors.white, fontSize: 40)),
-      //       ),
-      //     ),
-      //     TextButton(
-      //       onPressed: _chooseRed,
-      //       child: Container(
-      //         color: Colors.red,
-      //         padding: const EdgeInsets.all(14),
-      //         child: const Text("Красный",
-      //             style: TextStyle(color: Colors.white, fontSize: 40)),
-      //       ),
-      //     ),
-      //   ],
-      // );

@@ -20,4 +20,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/sounds/win.mp3
+    - assets/sounds/
+
