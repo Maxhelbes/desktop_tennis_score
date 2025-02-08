@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:desktop_tennis_score/entities.dart';
 import 'package:desktop_tennis_score/screens/choose_turn_screen.dart';
@@ -36,7 +34,7 @@ class _ScorePageState extends State<ScorePage> {
   int _globalScoreRed = 0;
   int _turnChanger = 2;
   Player _winner = Player(name: 'Ошибка', color: Colors.cyan);
-  List<(bool, int, int, int, int)> _scoreOrder = [];
+  final List<(bool, int, int, int, int)> _scoreOrder = [];
   // (_redTurn, _scoreGreen, _scoreRed, _turnCounter, _turnChanger)
 
   bool _checkWin() {
@@ -70,7 +68,6 @@ class _ScorePageState extends State<ScorePage> {
     }
     _scoreOrder
         .add((_redTurn, _scoreGreen, _scoreRed, _turnCounter, _turnChanger));
-    print(_scoreOrder);
   }
 
   void _incrementGreen() {
@@ -149,7 +146,6 @@ class _ScorePageState extends State<ScorePage> {
   bool rejectTurn() {
     bool output = false;
     setState(() {
-      print(_scoreOrder);
       if (_scoreOrder.length > 1) {
         _scoreOrder.removeLast();
         _redTurn = _scoreOrder.last.$1;
