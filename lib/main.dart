@@ -27,6 +27,8 @@ class MainApp extends StatelessWidget {
     ]);
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: "Теннис-Табло",
       theme: theme,
       home: CreatePlayers(),
       // ScorePage(
