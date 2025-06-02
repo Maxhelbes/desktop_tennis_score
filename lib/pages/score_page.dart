@@ -2,7 +2,10 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:desktop_tennis_score/entities.dart';
 import 'package:desktop_tennis_score/screens/choose_turn_screen.dart';
 import 'package:desktop_tennis_score/screens/congratulation_screen.dart';
+import 'package:desktop_tennis_score/services/sound_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 enum AppState {
   chooseTurn,
@@ -37,26 +40,63 @@ class _ScorePageState extends State<ScorePage> {
   final List<(bool, int, int, int, int)> _scoreOrder = [];
   // (_redTurn, _scoreGreen, _scoreRed, _turnCounter, _turnChanger)
 
+  late final SoundService _soundService;
+
+  @override
+  void initState() {
+    super.initState();
+    _soundService = GetIt.I<SoundService>();
+  }
+
+  // final AudioPlayer _soundPlayer = GetIt.I<AudioPlayer>();
+  // final _gongSound = AssetSource('sounds/gong.mp3');
+  // final _fanfareSound = AssetSource('sounds/win.mp3');
+
+  // final bool _isGondEnabled =
+  //     GetIt.I<SharedPreferences>().getBool('gongSound') ?? true;
+  // final bool _isFanfareEnabled =
+  //     GetIt.I<SharedPreferences>().getBool('fanfareSound') ?? true;
+
   bool _checkWin() {
     if (_scoreGreen >= 10 && _scoreRed >= 10) {
       _turnChanger = 1;
     }
 
-    if ((_scoreGreen >= 11 || _scoreRed >= 11) &&
-        ((_scoreRed - _scoreGreen).abs() >= 2)) {
-      if (_scoreRed > _scoreGreen) {
-        _winner = widget.rightPlayer;
-      } else {
-        _winner = widget.leftPlayer;
+    if (_scoreGreen >= 11 || _scoreRed >= 11) {
+      if ((_scoreRed - _scoreGreen).abs() >= 2) {
+        if (_scoreRed > _scoreGreen) {
+          _winner = widget.rightPlayer;
+        } else {
+          _winner = widget.leftPlayer;
+        }
+        _scoreGreen = 0;
+        _scoreRed = 0;
+        _turnCounter = 0;
+        _redTurn = false;
+        _turnChanger = 2;
+        myState = AppState.congratulations;
+        _scoreOrder.clear();
+        return true;
       }
-      _scoreGreen = 0;
-      _scoreRed = 0;
-      _turnCounter = 0;
-      _redTurn = false;
-      _turnChanger = 2;
-      myState = AppState.congratulations;
-      _scoreOrder.clear();
-      return true;
+    }
+
+    if (_scoreGreen >= 11 || _scoreRed >= 11) {
+      if ((_redTurn && (_scoreRed > _scoreGreen)) ||
+          (!_redTurn && (_scoreGreen > _scoreRed))) {
+        _soundService.playMore();
+      } else if ((_redTurn && (_scoreRed < _scoreGreen)) ||
+          (!_redTurn && (_scoreGreen < _scoreRed))) {
+        _soundService.playLess();
+      } else if (_scoreGreen == _scoreRed) {
+        _soundService.playEqual();
+      }
+      return false;
+    }
+
+    if (_redTurn) {
+      _soundService.playScore(_scoreRed, _scoreGreen);
+    } else {
+      _soundService.playScore(_scoreGreen, _scoreRed);
     }
     return false;
   }
@@ -99,7 +139,7 @@ class _ScorePageState extends State<ScorePage> {
     });
     _scoreOrder
         .add((_redTurn, _scoreGreen, _scoreRed, _turnCounter, _turnChanger));
-    AudioPlayer().play(AssetSource('sounds/gong.mp3'));
+    _soundService.playGong();
   }
 
   void _chooseGreen() {
@@ -109,7 +149,7 @@ class _ScorePageState extends State<ScorePage> {
     });
     _scoreOrder
         .add((_redTurn, _scoreGreen, _scoreRed, _turnCounter, _turnChanger));
-    AudioPlayer().play(AssetSource('sounds/gong.mp3'));
+    _soundService.playGong();
   }
 
   Text _getTitleText() {
@@ -289,7 +329,7 @@ class _ScorePageState extends State<ScorePage> {
       );
     }
     if (myState == AppState.congratulations) {
-      AudioPlayer().play(AssetSource('sounds/win.mp3'));
+      _soundService.playFanfare();
       swapPlayers();
       return CongratulationScreen(
           winner: _winner, playAgainFunction: _playAgain);

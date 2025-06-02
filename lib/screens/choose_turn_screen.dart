@@ -1,5 +1,5 @@
 import 'package:desktop_tennis_score/entities.dart';
-import 'package:desktop_tennis_score/widgets.dart';
+import 'package:desktop_tennis_score/widgets/half_tile.dart';
 import 'package:flutter/material.dart';
 
 class ChooseTurnScreen extends StatelessWidget {

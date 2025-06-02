@@ -1,6 +1,6 @@
 import 'package:desktop_tennis_score/entities.dart';
-import 'package:desktop_tennis_score/score_page.dart';
-import 'package:desktop_tennis_score/widgets.dart';
+import 'package:desktop_tennis_score/pages/score_page.dart';
+import 'package:desktop_tennis_score/widgets/half_tile.dart';
 import 'package:flutter/material.dart';
 
 class CreatePlayers extends StatefulWidget {
@@ -32,10 +32,9 @@ class _CreatePlayersState extends State<CreatePlayers> {
 
   @override
   Widget build(BuildContext context) {
-    // final height = MediaQuery.sizeOf(context).height;
     return Scaffold(
         appBar: AppBar(
-          title: Text('Выберите игроков:'),
+          title: Text('Введите имена игроков:'),
         ),
         body: Row(
           children: [
@@ -85,10 +84,14 @@ class _CreatePlayersState extends State<CreatePlayers> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ScorePage(
-                      leftPlayer: _leftPlayer, rightPlayer: _rightPlayer))),
+            context,
+            MaterialPageRoute(
+              builder: (context) => ScorePage(
+                leftPlayer: _leftPlayer,
+                rightPlayer: _rightPlayer,
+              ),
+            ),
+          ),
           backgroundColor: Colors.blue,
           child: Icon(
             Icons.check,

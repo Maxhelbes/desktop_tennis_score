@@ -1,15 +1,25 @@
-import 'package:desktop_tennis_score/entities.dart';
-import 'package:desktop_tennis_score/pages/create_players.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:desktop_tennis_score/pages/menu_page.dart';
+import 'package:desktop_tennis_score/services/sound_service.dart';
 import 'package:desktop_tennis_score/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
-final leftPlayer = Player(name: 'Зеленый', color: Colors.green);
-final rightPlayer = Player(name: 'Красный', color: Colors.red);
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-void main() {
-  // WakelockPlus.toggle(enable: true);
+  final prefs = await SharedPreferences.getInstance();
+  GetIt.I.registerSingleton<SharedPreferences>(prefs);
+
+  GetIt.I.registerSingleton<SoundService>(SoundService(prefs));
+
+  GetIt.I.registerSingleton<AudioPlayer>(AudioPlayer());
+
+  await GetIt.I<SoundService>().init();
+
   runApp(const MainApp());
 }
 
@@ -30,11 +40,7 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Теннис-Табло",
       theme: theme,
-      home: CreatePlayers(),
-      // ScorePage(
-      //   leftPlayer: leftPlayer,
-      //   rightPlayer: rightPlayer,
-      // ),
+      home: MenuPage(),
     );
   }
 }

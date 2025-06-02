@@ -1,4 +1,5 @@
 import 'package:desktop_tennis_score/entities.dart';
+import 'package:desktop_tennis_score/widgets/black_button.dart';
 import 'package:flutter/material.dart';
 
 class CongratulationScreen extends StatelessWidget {
@@ -40,43 +41,18 @@ class CongratulationScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: ColoredBox(
-                          color: const Color.fromARGB(255, 0, 0, 0),
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text(
-                                  'Завершить игру',
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(
-                                          255, 255, 220, 220),
-                                      fontSize: height / 30),
-                                )),
-                          )),
+                    BlackButton(
+                      text: 'Завершить игру',
+                      onPressed: () => Navigator.pop(context),
+                      height: height / 30,
+                      textColor: Color.fromARGB(255, 255, 220, 220),
                     ),
                     SizedBox(width: 50),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: ColoredBox(
-                          color: const Color.fromARGB(255, 0, 0, 0),
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: TextButton(
-                                onPressed: playAgainFunction,
-                                child: Text(
-                                  'Играть дальше',
-                                  style: TextStyle(
-                                    color: const Color.fromARGB(
-                                        255, 220, 255, 220),
-                                    fontSize: height / 30,
-                                  ),
-                                )),
-                          )),
+                    BlackButton(
+                      text: 'Играть дальше',
+                      onPressed: playAgainFunction,
+                      height: height / 30,
+                      textColor: Color.fromARGB(255, 220, 255, 220),
                     ),
                   ],
                 )
